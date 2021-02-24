@@ -1,0 +1,175 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: Machine Test
+# during dev, should point to your local machine
+host: localhost:10010
+# basePath prefixes all resource paths
+basePath: /
+#
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /users:
+    x-swagger-router-controller: user
+    post:
+      tags: ['Users']
+      description: create user
+      summary: create user
+      # used as the method name of the controller
+      operationId: createUser
+      parameters:
+        - name: body
+          in: body
+          description: input data
+          schema:
+           $ref: '#/definitions/createUser'
+          required: true
+      responses:
+        "201":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/response"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/response"
+    get:
+      tags: ['Users']
+      summary: get all users
+      description: get all users
+      # used as the method name of the controller
+      operationId: getAllUsers
+      parameters:
+        - name: page
+          in: query
+          description: page no
+          required: false
+          type: number
+          default: 1
+        - name: limit
+          in: query
+          description: per page
+          required: false
+          type: number
+          default: 10
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/response"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/response"
+  /users/{id}:
+    x-swagger-router-controller: user
+    patch:
+      tags: ['Users']
+      description: update user
+      summary: update user
+      # used as the method name of the controller
+      operationId: updateUser
+      parameters:
+        - name: id
+          in: path
+          description:  user id
+          type: number
+          required: true
+        - name: body
+          in: body
+          description: input data
+          schema:
+            $ref: '#/definitions/createUser'
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/response"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/response"
+    delete:
+      tags: ['Users']
+      summary: delete user
+      description: delete user
+      # used as the method name of the controller
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          description:  record id
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/response"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/response"
+    get:
+      tags: ['Users']
+      summary: get user details
+      description: get user details by slug
+      # used as the method name of the controller
+      operationId: userById
+      parameters:
+        - name: id
+          in: path
+          description:  user id
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/response"
+        # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/response"
+  /swagger:
+    x-swagger-pipe: swagger_raw
+# complex objects have schema definitions
+definitions:
+  response:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  createUser:
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      phoneNumber:
+        type: number
+      profileImage:
+        type: string
